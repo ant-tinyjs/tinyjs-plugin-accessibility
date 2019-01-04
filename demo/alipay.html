@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>支付宝容器环境 Demo</title>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="yes" name="apple-touch-fullscreen"/>
+<meta content="telephone=no,email=no" name="format-detection"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+<style>
+html, body, p, div {margin:0;padding:0;}
+</style>
+</head>
+<body>
+<script src="https://gw.alipayobjects.com/as/g/tiny/tiny/1.2.2/tiny.debug.js"></script>
+<script src="../dist/index.debug.js"></script>
+
+<script type="text/javascript">
+  // 新建 App
+  var app = new Tiny.Application({
+    showFPS: true,
+    referWidth: 375,
+    dpi: 2,
+  });
+
+  // 主场景
+  var Layer = function() {
+    Tiny.Container.call(this);
+
+    var sprite = Tiny.Sprite.fromImage('https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/moles/ali_mole.png');
+    sprite.interactive = true;
+    sprite.accessible = {
+      hint: '点击弹窗哦',
+    };
+    sprite.setAnchor(0.5);
+    sprite.setPosition(Tiny.WIN_SIZE.width / 2, Tiny.WIN_SIZE.height / 2);
+    sprite.on('touchstart', function(){
+      alert('touchstart');
+    });
+    this.addChild(sprite);
+  };
+
+  // constructor
+  Layer.prototype = Object.create(Tiny.Container.prototype);
+  Layer.prototype.constructor = Layer;
+
+  app.run(new Layer());
+
+  console.log(Tiny.accessibility);
+
+  // 根据检测逻辑来判断是否开启无障碍
+  Tiny.accessibility.autoActivate(app, {
+    debug: true,
+    eventType: 'touchstart',
+  }, {
+    onActivate: function(button){
+      AlipayJSBridge.call('toast', {
+        content: '已开启无障碍模式',
+      }, function() {
+        app.view.removeChild(button);
+      });
+    },
+  });
+</script>
+</body>
+</html>

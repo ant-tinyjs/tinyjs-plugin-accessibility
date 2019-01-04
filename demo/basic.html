@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>基本使用 Demo</title>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="yes" name="apple-touch-fullscreen"/>
+<meta content="telephone=no,email=no" name="format-detection"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+<style>
+html, body, p, div {margin:0;padding:0;}
+</style>
+</head>
+<body>
+<script src="https://gw.alipayobjects.com/as/g/tiny/tiny/1.2.2/tiny.debug.js"></script>
+<script src="../dist/index.debug.js"></script>
+
+<script type="text/javascript">
+  // 新建 App
+  var app = new Tiny.Application({
+    showFPS: true,
+    referWidth: 375,
+    dpi: 2,
+  });
+
+  // 主场景
+  var Layer = function() {
+    Tiny.Container.call(this);
+
+    var self = this;
+    [
+      {tilte: "ant", url: 'https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/ants/ant.png'},
+      {tilte: "cow", url: 'https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/ants/cow.png'},
+      {tilte: "einstein", url: 'https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/ants/einstein.png'},
+      {tilte: "lamp", url: 'https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/ants/lamp.png'},
+      {tilte: "super", url: 'https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/ants/super.png'},
+    ].forEach(function(item, i){
+      var sprite = Tiny.Sprite.fromImage(item.url);
+      sprite.accessible = {
+        hint: '精灵：' + item.tilte,
+        attr: {
+          key: i,
+        }
+      };
+      sprite.setPosition(i * 100, i * 100);
+      self.addChild(sprite);
+    })
+
+    var sprite = Tiny.Sprite.fromImage('https://gw.alipayobjects.com/as/g/tiny/resources/1.0.0/images/moles/ali_mole.png');
+    sprite.interactive = true;
+    sprite.accessible = {
+      hint: '点击弹窗哦',
+    };
+    sprite.setPosition(300, 500);
+    sprite.on('touchstart', function(){
+      alert('touchstart');
+    });
+    this.addChild(sprite);
+  };
+
+  // constructor
+  Layer.prototype = Object.create(Tiny.Container.prototype);
+  Layer.prototype.constructor = Layer;
+
+  app.run(new Layer());
+
+  console.log(Tiny.accessibility);
+
+  // 全部开启无障碍（容器环境下或生产环境下请最好根据无障碍模式开启状态来判断是否激活）
+  app.renderer.plugins.accessibility.activate({
+    debug: true,
+    eventType: 'touchstart',
+  });
+</script>
+</body>
+</html>
