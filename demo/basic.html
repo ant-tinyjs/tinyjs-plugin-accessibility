@@ -12,7 +12,7 @@ html, body, p, div {margin:0;padding:0;}
 </style>
 </head>
 <body>
-<script src="https://gw.alipayobjects.com/as/g/tiny/tiny/1.2.2/tiny.debug.js"></script>
+<script src="https://gw.alipayobjects.com/os/lib/tinyjs/tiny/1.5.1/tiny.js"></script>
 <script src="../dist/index.debug.js"></script>
 
 <script type="text/javascript">
@@ -56,6 +56,11 @@ html, body, p, div {margin:0;padding:0;}
       alert('touchstart');
     });
     this.addChild(sprite);
+
+    var self = this;
+    setTimeout(function() {
+      self.removeChildren();
+    }, 3000);
   };
 
   // constructor

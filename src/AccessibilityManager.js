@@ -240,10 +240,6 @@ class AccessibilityManager {
         child._accessible.div = null;
 
         i--;
-
-        if (this.children.length === 0) {
-          this.deactivate();
-        }
       } else {
         // map div to display..
         let { _accessible, hitArea, worldTransform: wt } = child;
