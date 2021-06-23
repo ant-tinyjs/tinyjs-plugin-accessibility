@@ -23,18 +23,15 @@
  * @param {boolean} extra.forceActivate - 对于无法检测的 iOS 设备，可以通过此参数强制开启无障碍模式。注意：兜底方案，需要关注设置后的占比
  */
 export default function(app, opts, extra = {}) {
-  let acReader = acReaderSupport();
-
+  // 通过 acReader 明确开启可访问性
   if (extra.acReader) {
-    acReader = extra.acReader;
+    return app.renderer.plugins.accessibility.activate(opts);
   }
-  // 开启无障碍情况
-  if (acReader) {
-    // 开启
-    app.renderer.plugins.accessibility.activate(opts);
-  } else {
+
+  // 自动检测开启可访问性
+  if (void 0 === extra.acReader) {
     if (Tiny.isMobile.android.device) {
-      var button = document.createElement('button');
+      const button = document.createElement('button');
       button.setAttribute('aria-live', 'assertive');
       button.setAttribute('role', 'alert');
       button.innerText = extra.tip || '请点按两次开启无障碍模式';
@@ -53,18 +50,4 @@ export default function(app, opts, extra = {}) {
       }
     }
   }
-}
-
-function acReaderSupport() {
-  const ua = navigator.userAgent;
-  let acReader = false;
-
-  // in Alipay
-  if (/AlipayClient\//g.test(ua)) {
-    const alipayDefined = (ua.match(/AlipayDefined(?:\(|\(.*?,).*?\)/g) || [])[0] || '';
-    const ac = (alipayDefined.match(/ac:(.*?)(,|\))/i) || [])[1] || '';
-    acReader = /(V)/g.test(ac) || false;
-  }
-
-  return acReader;
 }

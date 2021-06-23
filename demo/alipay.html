@@ -49,17 +49,13 @@ html, body, p, div {margin:0;padding:0;}
   console.log(Tiny.accessibility);
 
   // 根据检测逻辑来判断是否开启无障碍
-  Tiny.accessibility.autoActivate(app, {
-    debug: true,
-    eventType: 'touchstart',
-  }, {
-    onActivate: function(button){
-      AlipayJSBridge.call('toast', {
-        content: '已开启无障碍模式',
-      }, function() {
-        app.view.removeChild(button);
-      });
-    },
+  AlipayJSBridge.call('isScreenReaderEnabled', function(res) {
+    Tiny.accessibility.autoActivate(app, {
+      debug: true,
+      eventType: 'touchstart',
+    }, {
+      acReader: res.screenReaderEnabled,
+    });
   });
 </script>
 </body>
