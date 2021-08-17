@@ -233,6 +233,7 @@ class AccessibilityManager {
 
       if (child.renderId !== this.renderId) {
         child._accessible.active = false;
+        child._accessible.rendered = false;
 
         Tiny.removeItems(this.children, i, 1);
         this.div.removeChild(child._accessible.div);
@@ -261,11 +262,14 @@ class AccessibilityManager {
 
           this.capHitArea(hitArea);
 
-          div.style.left = `${hitArea.x * sx * dpi}px`;
-          div.style.top = `${hitArea.y * sy * dpi}px`;
-          div.style.width = `${hitArea.width * sx * dpi}px`;
-          div.style.height = `${hitArea.height * sy * dpi}px`;
-          child._accessible.hitArea = hitArea;
+          if (!child.accessible.renderOnce || !child._accessible.rendered) {
+            div.style.left = `${hitArea.x * sx * dpi}px`;
+            div.style.top = `${hitArea.y * sy * dpi}px`;
+            div.style.width = `${hitArea.width * sx * dpi}px`;
+            div.style.height = `${hitArea.height * sy * dpi}px`;
+            child._accessible.hitArea = hitArea;
+            child._accessible.rendered = hitArea.width && hitArea.height;
+          }
         }
 
         // update div/button attrs and hints if they exist and they've changed
@@ -375,6 +379,7 @@ class AccessibilityManager {
 
     displayObject._accessible = {
       active: true,
+      rendered: false,
       div,
     };
     div.displayObject = displayObject;
