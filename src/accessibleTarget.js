@@ -34,6 +34,7 @@ export default {
    * @property {string} type - 显示对象的交互类型，比如：button/label（按钮/文本），默认值是：label，如果显示对象设置了 `interactive=true`，那就会认为是 button
    * @property {string} hint - 提示文字，即读屏软件要读出来的内容，即设置 DOM 标签的 `aria-label` 值
    * @property {boolean} renderOnce - 显示对象是否只渲染一次，避免持续播放动画的显示对象DOM频繁重绘
+   * @property {number} renderIndex - 显示对象 DOM 渲染顺序，越小越靠前
    * @property {object} attr - 添加到 DOM 标签上的属性值，你可以添加任何属性，包括 `aria-label`、`aria-live` 等等
    * @property {string} attr.title - 附加的读屏内容，如果没有设置 `hint`，则使用这个，如果同时设置，则优先使用 `hint`
    */
@@ -41,6 +42,7 @@ export default {
     type: 'label',
     hint: null,
     renderOnce: false,
+    renderIndex: 0,
     attr: {},
   },
 

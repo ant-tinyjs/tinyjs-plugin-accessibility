@@ -385,7 +385,29 @@ class AccessibilityManager {
     div.displayObject = displayObject;
 
     this.children.push(displayObject);
-    this.div.appendChild(div);
+    this.appendChild(displayObject);
+  }
+
+  /**
+   * Add element to the dom element that will sit over the TinyJS element according to its renderIndex.
+   *
+   * @private
+   * @param {DisplayObject} displayObject - The child to make accessible.
+   */
+  appendChild(displayObject) {
+    this.children.sort(function(elemA, elemB) {
+      return elemA.accessible.renderIndex - elemB.accessible.renderIndex;
+    });
+
+    const index = this.children.findIndex(function(elem) {
+      return elem.accessible.renderIndex > displayObject.accessible.renderIndex;
+    });
+
+    if (index > -1) {
+      this.div.insertBefore(displayObject._accessible.div, this.children[index]._accessible.div);
+    } else {
+      this.div.appendChild(displayObject._accessible.div);
+    }
   }
 
   /**
