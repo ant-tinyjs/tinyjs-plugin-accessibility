@@ -272,6 +272,8 @@ class AccessibilityManager {
           }
         }
 
+        div.setAttribute('aria-hidden', !hitArea.width || !hitArea.height);
+
         // update div/button attrs and hints if they exist and they've changed
         const { attr, hint } = child.accessible;
 
