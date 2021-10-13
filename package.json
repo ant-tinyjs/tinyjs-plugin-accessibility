@@ -1,6 +1,6 @@
 {
   "name": "tinyjs-plugin-accessibility",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "author": "yiiqii",
   "description": "Renderer plugin for interaction accessibility for end-users with physical impairments which require screen-renders",
   "keywords": [
