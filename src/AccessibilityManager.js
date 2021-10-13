@@ -233,6 +233,7 @@ class AccessibilityManager {
 
       if (child.renderId !== this.renderId) {
         child._accessible.active = false;
+        child._accessible.rendered = false;
 
         Tiny.removeItems(this.children, i, 1);
         this.div.removeChild(child._accessible.div);
@@ -261,12 +262,17 @@ class AccessibilityManager {
 
           this.capHitArea(hitArea);
 
-          div.style.left = `${hitArea.x * sx * dpi}px`;
-          div.style.top = `${hitArea.y * sy * dpi}px`;
-          div.style.width = `${hitArea.width * sx * dpi}px`;
-          div.style.height = `${hitArea.height * sy * dpi}px`;
-          child._accessible.hitArea = hitArea;
+          if (!child.accessible.renderOnce || !child._accessible.rendered) {
+            div.style.left = `${hitArea.x * sx * dpi}px`;
+            div.style.top = `${hitArea.y * sy * dpi}px`;
+            div.style.width = `${hitArea.width * sx * dpi}px`;
+            div.style.height = `${hitArea.height * sy * dpi}px`;
+            child._accessible.hitArea = hitArea;
+            child._accessible.rendered = hitArea.width && hitArea.height;
+          }
         }
+
+        div.setAttribute('aria-hidden', !hitArea.width || !hitArea.height);
 
         // update div/button attrs and hints if they exist and they've changed
         const { attr, hint } = child.accessible;
@@ -375,12 +381,35 @@ class AccessibilityManager {
 
     displayObject._accessible = {
       active: true,
+      rendered: false,
       div,
     };
     div.displayObject = displayObject;
 
     this.children.push(displayObject);
-    this.div.appendChild(div);
+    this.appendChild(displayObject);
+  }
+
+  /**
+   * Add element to the dom element that will sit over the TinyJS element according to its renderIndex.
+   *
+   * @private
+   * @param {DisplayObject} displayObject - The child to make accessible.
+   */
+  appendChild(displayObject) {
+    this.children.sort(function(elemA, elemB) {
+      return elemA.accessible.renderIndex - elemB.accessible.renderIndex;
+    });
+
+    const index = this.children.findIndex(function(elem) {
+      return elem.accessible.renderIndex > displayObject.accessible.renderIndex;
+    });
+
+    if (index > -1) {
+      this.div.insertBefore(displayObject._accessible.div, this.children[index]._accessible.div);
+    } else {
+      this.div.appendChild(displayObject._accessible.div);
+    }
   }
 
   /**
