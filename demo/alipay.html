@@ -48,7 +48,7 @@ html, body, p, div {margin:0;padding:0;}
 
   console.log(Tiny.accessibility);
 
-  // 根据检测逻辑来判断是否开启无障碍
+  // 根据检测逻辑来判断是否开启无障碍（此接口 10.1.87 版本开始支持）
   AlipayJSBridge.call('isScreenReaderEnabled', function(res) {
     Tiny.accessibility.autoActivate(app, {
       debug: true,
